@@ -1,0 +1,44 @@
+:root {
+  --clr-neutral-100: #f1f1f1;
+  --clr-neutral-400: #262626;
+  
+  --clr-accent-400: #dfa100;
+  --clr-accent-700: #b17f00;
+  --clr-accent-900: #5c4202;
+
+  --fs-small: 0.75rem;
+  --fs-normal: 1.25rem;
+  --fs-large: 2.25rem;
+  --fs-x-large: 2.75rem;
+
+  --fw-thin: 200;
+  --fw-normal: 400;
+  --fw-bold: 700;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

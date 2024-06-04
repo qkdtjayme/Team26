@@ -1,0 +1,36 @@
+.card-container {
+    background: transparent;
+    backdrop-filter: blur(8px);
+    padding: 1rem;
+    border: 2px solid var(--clr-accent-700);
+    border-radius: 1rem;
+}
+
+.card-heading-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.card-heading {
+    color: var(--clr-neutral-100);
+    font-weight: var(--fw-bold);
+}
+
+.card-body {
+    color: var(--clr-neutral-100);
+}
+
+.card-button {
+    background-color: var(--clr-accent-400);
+    color: var(--clr-neutral-100)
+}
+
+.card-button:hover {
+    background-color: var(--clr-accent-700);
+    color: var(--clr-neutral-100)
+}
+
+.card-chip {
+    background-color: var(--clr-accent-400);
+    color: var(--clr-neutral-100)
+}

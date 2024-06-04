@@ -1,0 +1,65 @@
+.records-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.5)), url("../../../public/gym-bg.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: var(--clr-neutral-100);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.records-table-container {
+    min-width: 900px;
+    min-height: fit-content;
+}
+
+.records-button-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.records-button {
+    color: var(--clr-neutral-100);
+    background-color: var(--clr-accent-400);
+    font-size: var(--fs-normal);
+}
+
+.records-button:hover {
+    background-color: var(--clr-accent-900);
+}
+
+.records-delete {
+    background-color: red;
+}
+
+.records-delete:hover {
+    color: var(--clr-neutral-100);
+    background-color: darkred;
+}
+
+.records-table {
+    width: 100%;
+}
+
+& .MuiDataGrid-root {
+    backdrop-filter: blur(16px);
+    color: var(--clr-neutral-100);
+}
+
+&  .MuiDataGrid-columnHeader {
+    background-color: var(--clr-accent-400);
+    color: var(--clr-neutral-400);
+    font-size: 1rem;
+    font-weight: var(--fw-bold);
+}
+
+& .MuiDataGrid-footerContainer {
+    background-color: var(--clr-accent-700);
+}

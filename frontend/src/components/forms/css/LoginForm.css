@@ -1,0 +1,33 @@
+.login-form {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  border: 2px solid lightgray;
+  border-radius: 16px;
+  gap: 1.5rem;
+}
+
+.login-item {
+  background-color: var(--clr-neutral-100);
+  border-radius: 0.5rem;
+}
+
+.login-button-container {
+  width: 100%
+}
+
+.login-button {
+  background-color: var(--clr-accent-400);
+  border-radius: 0.5rem;
+}
+
+.login-button:hover {
+  background-color: var(--clr-accent-700);
+}
+
+.login-signup-button {
+  color: var(--clr-neutral-100)
+}

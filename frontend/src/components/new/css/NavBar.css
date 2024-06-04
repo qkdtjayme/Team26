@@ -1,0 +1,19 @@
+.nav-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    padding: 1rem;
+}
+
+.nav-link {
+    font-size: var(--fs-normal);
+    font-weight: var(--fw-bold);
+    color: var(--clr-neutral-100);
+    text-shadow: 2px 2px 5px var(--clr-neutral-400);
+}
+
+.nav-link:hover {
+    color: var(--clr-accent-400)
+}

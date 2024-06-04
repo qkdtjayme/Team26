@@ -1,0 +1,206 @@
+.body {
+    background-image: url('../public/gym-bg.jpg'); 
+    background-size: cover;
+    background-position: center;
+    height: 150vh;
+    width: 100%;
+}
+
+.body1 {
+  background-image: url('../public/gym-bg.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  width: auto;
+}
+
+.body2 {
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  width: auto;
+}
+
+.body3 {
+  background-image: url('../public/gym-bg.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  width: auto;
+}
+
+.video {
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.exercise {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 5fr 5fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  width: auto;
+  height: auto;
+  padding: 20px;
+  border-radius: 30px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.user {
+  background-image: url('../public/user.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+  padding: 50px;
+  margin-right: 800px;
+  justify-content: center;
+}
+
+.picture {
+  background-image: url('../public/bicep.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture2 {
+  background-image: url('../public/row.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture3 {
+  background-image: url('../public/lift.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture4 {
+  background-image: url('../public/jacks.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture5 {
+  background-image: url('../public/bicep.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture6 {
+  background-image: url('../public/lunges.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture7 {
+  background-image: url('../public/press.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture8 {
+  background-image: url('../public/pushup.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture9 {
+  background-image: url('../public/twist.jpg'); 
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  border-radius: 15px;
+  width: auto;
+}
+
+.picture10 {
+  background-image: url('../public/squat.jpg'); 
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px;
+  height: auto;
+  width: auto;
+}
+
+.dashboard-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .navigation {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nav-item {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .nav-item:hover {
+    background-color: #a3943b;
+  }
+  
+  .active {
+    background-color: transparent;
+    color:  #000000;
+   
+  }
+  
+  .tab-content {
+    margin-top: 20px;
+  }
+
+  .button-container {
+    text-align: center;
+    align-items: center;
+  }
+
+  .button1 {
+    display: flex;
+    justify-content: center;
+    margin-left: 600px;
+  }
+
+  .nav-item {
+    color: white;
+}
