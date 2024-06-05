@@ -52,7 +52,7 @@ const Classifier = ({ predictionHandler }) => {
         }
 
         let tensor = tensors[i];
-        tensor = tf.reverse(tensor, [-1]);
+        // tensor = tf.reverse(tensor, [-1]); // Uncomment this if the tensor is in BGR format
         const prediction = featureExtractorRef.current
           .predict(tensor)
           .arraySync();
