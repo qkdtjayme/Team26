@@ -5,6 +5,15 @@ import React from "react";
 const IMG_SIZE = 224;
 const MAX_SEQ_LENGTH = 50;
 const NUM_FEATURES = 2048;
+const LABELS = [
+  "barbell_biceps_curl",
+  "deadlift",
+  "jump_and_jacks",
+  "lateral_raise",
+  "lunges",
+  "overhead_press",
+  "push_up",
+];
 
 /**
  * Call this component whenever you want to open the camera when exercising.
@@ -89,7 +98,8 @@ const Classifier = ({ predictionHandler }) => {
             .fromPixels(img)
             .resizeBilinear([IMG_SIZE, IMG_SIZE])
             .expandDims()
-            .toFloat();
+            .toFloat()
+            .div(tf.scalar(255));
 
           tensors.current = tensors.current.concat(tensor);
 
@@ -109,14 +119,21 @@ const Classifier = ({ predictionHandler }) => {
                 .predict([frameFeatures, frameMask])
                 .data();
 
-              const maxIndices = tf.tensor1d(predictions).argMax().toInt();
+              const maxIndices = tf.tensor1d(predictions).argMax();
+              const maxIndexValue = maxIndices.dataSync()[0];
+              const classLabel = LABELS[maxIndexValue];
 
               console.log(`Predictions: ${predictions}`);
-              console.log(`Predicted class index: ${maxIndices}`);
+              console.log(`Predicted class index: ${maxIndexValue}`);
+              console.log(`Predicted class label: ${classLabel}`);
 
               // Pass the predictions to the getter
               if (predictionHandler)
-                predictionHandler({ idx: maxIndices, probs: predictions });
+                predictionHandler({
+                  idx: maxIndexValue,
+                  label: classLabel,
+                  probs: predictions,
+                });
             } catch (err) {
               console.log(err);
             }
