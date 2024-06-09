@@ -24,12 +24,6 @@ export const EXERCISES = {
     description: "STRENGTH | Burn Fat and Build Muscle without using Weights.",
     link: "/jack",
   },
-  lraise: {
-    name: "LateralRaise",
-    imageFile: "raise.jpg",
-    description: "STABILITY | Increases Shoulder Mobility, and Range of Motion.",
-    link: "/raise",
-  },
   lunges: {
     name: "Lunges",
     imageFile: "lunges.jpg",
@@ -41,18 +35,6 @@ export const EXERCISES = {
     imageFile: "pushup.jpg",
     description: "STRENGTH | Strengthen and tone Chest, Triceps, and Shoulders.",
     link: "/pushup",
-  },
-  squats: {
-    name: "Squats",
-    imageFile: "squat.jpg",
-    description: "FLEXIBILITY | Strengthen your Glutes or Butt Muscles.",
-    link: "/squat",
-  },
-  barbellrow: {
-    name: "Barbell Row",
-    imageFile: "row.jpg",
-    description: "STRENGTH | Build Trunk Strength and Spine Stability.",
-    link: "/barbellrow",
   },
   overheadpress: {
     name: "Overhead Press",
