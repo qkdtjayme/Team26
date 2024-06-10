@@ -75,9 +75,7 @@ const Classifier = ({ predictionHandler }) => {
       tensors.current = [];
 
       try {
-        const predictions = await modelRef.current
-          .predict(frameFeatures)
-          .data();
+        const predictions = await modelRef.current.predict(frameFeatures).data();
 
         const maxIndices = tf.tensor1d(predictions).argMax();
         const maxIndexValue = maxIndices.dataSync()[0];
@@ -134,7 +132,7 @@ const Classifier = ({ predictionHandler }) => {
     return () => clearInterval(interval);
   }, [webcamRef, modelRef, poseRef]);
 
-  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />;
+  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" width={540} height={600}/>;
 };
 
 export default Classifier;
