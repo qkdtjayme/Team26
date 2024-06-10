@@ -90,9 +90,9 @@ const OverheadPress = () => {
                 )}
               </div>
               <div style={styles.text}>
-                <h2>Set: {sets} Sets</h2>
-                <h2>Rest Duration: {timer} seconds</h2>
-                <h2>Rep: {reps}</h2>
+                <h2>Set: {sets} | <span style={styles.greenText}>3</span></h2>
+                <h2>Rep: {reps} | <span style={styles.greenText}>10</span></h2>
+                <h2>Rest Duration: <span style={styles.greenText}>{timer} seconds</span></h2>
               </div>
               <button type="submit" style={styles.button} onClick={handleHome}>
                 Finish Workout
@@ -114,6 +114,9 @@ const styles = {
     fontWeight: "bold",
     lineHeight: "65px",
     color: "#fff",
+  },
+  greenText: {
+    color: "green",
   },
   webContainer: {
     padding: "20px",
