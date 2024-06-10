@@ -153,7 +153,7 @@ const Classifier = ({ predictionHandler }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcamRef, featureExtractorRef, lstmModelRef]);
 
-  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />;
+  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" videoConstraints={{ width: 540, height: 800 }} />;
 };
 
 export default Classifier;

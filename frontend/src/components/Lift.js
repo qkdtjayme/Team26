@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Classifier from "./Classifier.js";
 import { addRecordToDb } from "../db/records.js";
 import lift from "../components/vids/lift.mp4";
+import "../pages/css/Home.css";
 
 const Lift = () => {
   const [showCamera, setShowCamera] = useState(false);
   const [sets, setSets] = useState(0);
   const [reps, setReps] = useState(0);
+  const [timer, setTimer] = useState(90);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timer]);
 
   const handleHome = () => {
     // Adds record to db
@@ -19,7 +34,14 @@ const Lift = () => {
 
   // Controls the cameras
   const cameraClick = () => {
+    setIsTimerRunning(false);
+    setTimer(90);
     setShowCamera(true);
+  };
+
+  const startTimer = () => {
+    setIsTimerRunning(true);
+    setShowCamera(false);
   };
 
   // Gets the prediction from the classifier
@@ -31,7 +53,7 @@ const Lift = () => {
   };
 
   return (
-    <div className="body3">
+    <div className="home-container">
       <div className="dashboard-container">
         <h2 style={styles.heading}>Start Workout</h2>
         <div className="video">
@@ -41,33 +63,42 @@ const Lift = () => {
             loop
             muted
             height={600}
-            width={800}
+            width={600}
           ></video>
           <div style={styles.webContainer}>
-            <div className="button1">
-              <button
-                type="submit"
-                style={styles.button1}
-                onClick={cameraClick}
-              >
-                Start Workout
+            <div style={styles.buttonContainer}>
+                <div className="finishButton">
+                  <button
+                    type="submit"
+                    style={styles.button}
+                    onClick={cameraClick}
+                  >
+                    Start Workout
+                  </button>
+                  <button
+                    type="submit"
+                    style={styles.button}
+                    onClick={startTimer}
+                  >
+                    Rest
+                  </button>
+                </div>
+              </div>
+              <div style={styles.camera}>
+                {showCamera && (
+                  <Classifier predictionHandler={predictionHandler} />
+                )}
+              </div>
+              <div style={styles.text}>
+                <h2>Set: {sets} Sets</h2>
+                <h2>Rest Duration: {timer} seconds</h2>
+                <h2>Rep: {reps}</h2>
+              </div>
+              <button type="submit" style={styles.button} onClick={handleHome}>
+                Finish Workout
               </button>
             </div>
-            <div style={styles.camera}>
-              {showCamera && (
-                <Classifier predictionHandler={predictionHandler} />
-              )}
-            </div>
-            <div style={styles.text}>
-              <h2>Set: {sets} Sets</h2>
-              <h2>Duration:</h2>
-              <h2>Rep: {reps}</h2>
-            </div>
-            <button type="submit" style={styles.button} onClick={handleHome}>
-              Finish Workout
-            </button>
           </div>
-        </div>
       </div>
     </div>
   );
@@ -91,6 +122,12 @@ const styles = {
     border: "2px solid #000000",
     borderRadius: "20px",
     marginRight: "170px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginRight: "500px", 
   },
   camera: {
     padding: "2px",
@@ -116,14 +153,15 @@ const styles = {
     display: "flex",
     margin: "5px",
   },
-  button1: {
+  finishButton: {
     padding: "15px 35px",
     borderRadius: "5px",
     cursor: "pointer",
     backgroundColor: "#DFA100",
     color: "#fff",
     border: "2px solid #DFA100",
-    alignItems: "right",
+    display: "flex",
     margin: "5px",
+    marginTop: "20px",
   },
 };
