@@ -44,13 +44,26 @@ const Pushup = () => {
       setShowCamera(false);
     };
 
-  // Gets the prediction from the classifier
-  const predictionHandler = (predictions) => {
-    if (predictions) {
-      //   console.log(predictions); // ? Uncomment for debugging
-      // TODO: Handle predictions from here. Count sets or reps based on your algorithm.
+// Define the expected label
+const LABEL = "push_up";
+let incorrect = 0;
+
+// Gets the prediction from the classifier
+const predictionHandler = (predictions) => {
+  if (predictions) {
+    console.log(predictions); // Uncomment for debugging
+
+    // Increment incorrect counter if the label is not "barbell_biceps_curl"
+    if (predictions.label !== "barbell_biceps_curl") {
+      incorrect += 1;
     }
-  };
+
+    // Increment reps counter if the label matches LABEL
+    if (predictions.label === LABEL) {
+      setReps(prevReps => prevReps + 1);
+    }
+  }
+};
 
   return (
     <div className="home-container">

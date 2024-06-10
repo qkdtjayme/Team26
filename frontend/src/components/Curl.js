@@ -47,7 +47,7 @@ const Curl = () => {
   // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
-      //   console.log(predictions); // ? Uncomment for debugging
+      console.log(predictions); // ? Uncomment for debugging
       // TODO: Handle predictions from here. Count sets or reps based on your algorithm.
     }
   };

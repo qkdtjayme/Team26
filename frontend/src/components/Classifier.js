@@ -1,10 +1,9 @@
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { Pose } from "@mediapipe/pose";
 
 const IMG_SIZE = 224;
-const MAX_SEQ_LENGTH = 50;
-const NUM_FEATURES = 2048;
 const LABELS = [
   "barbell_biceps_curl",
   "deadlift",
@@ -15,145 +14,127 @@ const LABELS = [
   "push_up",
 ];
 
-/**
- * Call this component whenever you want to open the camera when exercising.
- * @returns
- */
 const Classifier = ({ predictionHandler }) => {
-  const webcamRef = React.useRef(null);
-  const featureExtractorRef = React.useRef(null);
-  const lstmModelRef = React.useRef(null);
-  const tensors = React.useRef([]);
+  const webcamRef = useRef(null);
+  const modelRef = useRef(null);
+  const poseRef = useRef(null);
+  const tensors = useRef([]);
 
-  // Load the model upon mount
-  React.useEffect(() => {
-    const loadFeatureExtractor = async () => {
+  useEffect(() => {
+    const loadModel = async () => {
       const modelUrl = `/models/inception/model.json`;
       const model = await tf.loadLayersModel(modelUrl);
-      featureExtractorRef.current = model;
+      modelRef.current = model;
     };
 
-    const loadLSTMModel = async () => {
-      const modelUrl = `/models/lstm/model.json`;
-      const model = await tf.loadLayersModel(modelUrl);
-      lstmModelRef.current = model;
+    const initializePose = async () => {
+      poseRef.current = new Pose({
+        locateFile: (file) =>
+          `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+      });
+
+      poseRef.current.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        enableSegmentation: true,
+        smoothSegmentation: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+
+      poseRef.current.onResults(handlePoseResults);
     };
 
-    loadFeatureExtractor();
-    loadLSTMModel();
+    loadModel();
+    initializePose();
   }, []);
 
-  /**
-   * Preprocesses the image
-   * @param {*} frame
-   * @returns
-   */
-  const extractFeatures = (tensors) => {
-    const res = tf.tidy(() => {
-      const frameMask = tf.zeros([1, MAX_SEQ_LENGTH], "bool").arraySync();
-      const frameFeatures = tf
-        .zeros([1, MAX_SEQ_LENGTH, NUM_FEATURES], "float32")
-        .arraySync();
+  const handlePoseResults = async (results) => {
+    if (!results.poseLandmarks) {
+      tensors.current = [];
+      return;
+    }
 
-      for (let i = 0; i < tensors.length; i++) {
-        if (i >= MAX_SEQ_LENGTH) {
-          break;
-        }
-
-        let tensor = tensors[i];
-        // tensor = tf.reverse(tensor, [-1]); // Uncomment this if the tensor is in BGR format
-        const prediction = featureExtractorRef.current
-          .predict(tensor)
-          .arraySync();
-        frameFeatures[0][i] = prediction[0];
-        frameMask[0][i] = true;
-      }
-
-      return {
-        frameFeatures: tf.tensor(frameFeatures),
-        frameMask: tf.tensor(frameMask),
-      }; // Change this when needed
+    const tensor = tf.tidy(() => {
+      const keypoints = results.poseLandmarks.map((landmark) => [
+        landmark.x,
+        landmark.y,
+        landmark.z,
+      ]);
+      return tf.tensor2d(keypoints).reshape([1, keypoints.length * 3]);
     });
 
-    return res;
+    tensors.current = tensors.current.concat(tensor);
+
+    if (tensors.current.length >= 1) {
+      console.log("Extracting features from frames...");
+      const frameFeatures = extractFeatures(tensors.current);
+      tensors.current = [];
+
+      try {
+        const predictions = await modelRef.current
+          .predict(frameFeatures)
+          .data();
+
+        const maxIndexValue = predictions.indexOf(Math.max(...predictions));
+        const classLabel = LABELS[maxIndexValue];
+
+        console.log(`Predictions: ${predictions}`);
+        console.log(`Predicted class index: ${maxIndexValue}`);
+        console.log(`Predicted class label: ${classLabel}`);
+
+        if (predictionHandler) {
+          predictionHandler({
+            idx: maxIndexValue,
+            label: classLabel,
+            probs: predictions,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
-  /**
-   * Makes a prediction on the current frame
-   */
+  const extractFeatures = (tensors) => {
+    const frameFeatures = tf.concat(tensors, 0);
+    return frameFeatures;
+  };
+
   const predictFrame = async () => {
-    if (
-      webcamRef.current &&
-      featureExtractorRef.current &&
-      lstmModelRef.current
-    ) {
+    if (webcamRef.current && modelRef.current && poseRef.current) {
       const frame = webcamRef.current.getScreenshot();
       const img = new Image();
       img.src = frame;
 
-      tf.tidy(() => {
-        img.onload = async () => {
-          // Convert the image to a tensor
-          let tensor = tf.browser
-            .fromPixels(img)
-            .resizeBilinear([IMG_SIZE, IMG_SIZE])
-            .expandDims()
-            .toFloat()
-            .div(tf.scalar(255));
+      img.onload = async () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = IMG_SIZE;
+        canvas.height = IMG_SIZE;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, IMG_SIZE, IMG_SIZE);
 
-          tensors.current = tensors.current.concat(tensor);
+        const imageData = ctx.getImageData(0, 0, IMG_SIZE, IMG_SIZE);
+        const rgbImageData = new ImageData(
+          new Uint8ClampedArray(imageData.data),
+          IMG_SIZE,
+          IMG_SIZE
+        );
 
-          // If frames reached the MAX_SEQ_LENGTH, then start prediction using inception
-          if (tensors.current.length > MAX_SEQ_LENGTH) {
-            // Get features from inception
-            console.log("Extracting features from frames...");
-            const { frameFeatures, frameMask } = extractFeatures(
-              tensors.current
-            );
-
-            // Clear tensors after processing
-            tensors.current = [];
-
-            try {
-              const predictions = await lstmModelRef.current
-                .predict([frameFeatures, frameMask])
-                .data();
-
-              const maxIndices = tf.tensor1d(predictions).argMax();
-              const maxIndexValue = maxIndices.dataSync()[0];
-              const classLabel = LABELS[maxIndexValue];
-
-              console.log(`Predictions: ${predictions}`);
-              console.log(`Predicted class index: ${maxIndexValue}`);
-              console.log(`Predicted class label: ${classLabel}`);
-
-              // Pass the predictions to the getter
-              if (predictionHandler)
-                predictionHandler({
-                  idx: maxIndexValue,
-                  label: classLabel,
-                  probs: predictions,
-                });
-            } catch (err) {
-              console.log(err);
-            }
-          }
-        };
-      });
+        await poseRef.current.send({ image: rgbImageData });
+      };
     }
   };
 
-  // This makes a prediction on the model every 100 milliseconds
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       predictFrame();
     }, 100);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webcamRef, featureExtractorRef, lstmModelRef]);
+  }, [webcamRef, modelRef, poseRef]);
 
-  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" videoConstraints={{ width: 540, height: 800 }} />;
+  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />;
 };
 
 export default Classifier;
