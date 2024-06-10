@@ -10,7 +10,7 @@
     "@mui/material": "^5.15.15",
     "@mui/x-data-grid": "^7.3.0",
     "@tensorflow-models/coco-ssd": "^2.2.3",
-    "@tensorflow/tfjs": "^4.17.0",
+    "@tensorflow/tfjs": "^4.20.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.1",
     "dotenv": "^16.4.5",

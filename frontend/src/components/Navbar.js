@@ -14,12 +14,10 @@ const NavBar = () => {
                 <div className="navigation">
                     <div className={`nav-item ${activeTab === 'home' ? 'active' : ''}`} onClick={() => handleTabChange('home')}>Home</div>
                     <div className={`nav-item ${activeTab === 'about' ? 'active' : ''}`} onClick={() => handleTabChange('about')}>About</div>
-                    <div className={`nav-item ${activeTab === 'contact' ? 'active' : ''}`} onClick={() => handleTabChange('contact')}>Contact Us</div>
                 </div>
                 <div className="tab-content">
                     {activeTab === 'home' && <HomeTab />}
                     {activeTab === 'about' && <AboutTab />}
-                    {activeTab === 'contacts' && <ContactTab />}
                 </div>
             </div>
         </div>
@@ -59,14 +57,6 @@ const AboutTab = () => {
                 <h2 style={styles.font3}>Daniel Joven U. Suyat</h2>
                 <h2 style={styles.font3}>Arvin A. Tagongtong</h2>
             </div>
-        </div>
-    )
-}
-
-const ContactTab = () => {
-    return (
-        <div>
-
         </div>
     )
 }

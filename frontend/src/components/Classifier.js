@@ -22,15 +22,18 @@ const Classifier = ({ predictionHandler }) => {
 
   useEffect(() => {
     const loadModel = async () => {
-      const modelUrl = `/models/inception/model.json`;
-      const model = await tf.loadLayersModel(modelUrl);
-      modelRef.current = model;
+      try {
+        const modelUrl = `/models/inception/model.json`;
+        const model = await tf.loadLayersModel(modelUrl);
+        modelRef.current = model;
+      } catch (error) {
+        console.error("Error loading the model:", error);
+      }
     };
 
     const initializePose = async () => {
       poseRef.current = new Pose({
-        locateFile: (file) =>
-          `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
       });
 
       poseRef.current.setOptions({
@@ -39,7 +42,7 @@ const Classifier = ({ predictionHandler }) => {
         enableSegmentation: true,
         smoothSegmentation: true,
         minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
+        minTrackingConfidence: 0.5
       });
 
       poseRef.current.onResults(handlePoseResults);
@@ -56,10 +59,10 @@ const Classifier = ({ predictionHandler }) => {
     }
 
     const tensor = tf.tidy(() => {
-      const keypoints = results.poseLandmarks.map((landmark) => [
+      const keypoints = results.poseLandmarks.map(landmark => [
         landmark.x,
         landmark.y,
-        landmark.z,
+        landmark.z
       ]);
       return tf.tensor2d(keypoints).reshape([1, keypoints.length * 3]);
     });
@@ -76,7 +79,8 @@ const Classifier = ({ predictionHandler }) => {
           .predict(frameFeatures)
           .data();
 
-        const maxIndexValue = predictions.indexOf(Math.max(...predictions));
+        const maxIndices = tf.tensor1d(predictions).argMax();
+        const maxIndexValue = maxIndices.dataSync()[0];
         const classLabel = LABELS[maxIndexValue];
 
         console.log(`Predictions: ${predictions}`);
@@ -91,7 +95,7 @@ const Classifier = ({ predictionHandler }) => {
           });
         }
       } catch (err) {
-        console.log(err);
+        console.error("Error during prediction:", err);
       }
     }
   };
@@ -108,18 +112,14 @@ const Classifier = ({ predictionHandler }) => {
       img.src = frame;
 
       img.onload = async () => {
-        const canvas = document.createElement("canvas");
+        const canvas = document.createElement('canvas');
         canvas.width = IMG_SIZE;
         canvas.height = IMG_SIZE;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, IMG_SIZE, IMG_SIZE);
 
         const imageData = ctx.getImageData(0, 0, IMG_SIZE, IMG_SIZE);
-        const rgbImageData = new ImageData(
-          new Uint8ClampedArray(imageData.data),
-          IMG_SIZE,
-          IMG_SIZE
-        );
+        const rgbImageData = new ImageData(new Uint8ClampedArray(imageData.data), IMG_SIZE, IMG_SIZE);
 
         await poseRef.current.send({ image: rgbImageData });
       };
