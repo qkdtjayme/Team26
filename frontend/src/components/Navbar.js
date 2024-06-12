@@ -42,7 +42,6 @@ const HomeTab = () => {
                 <button type="submit" style={styles.button1} onClick={handleCreate}> CREATE ACCOUNT NOW </button>
             </div>
         </div>
-
     );
 };
 
@@ -51,16 +50,33 @@ const AboutTab = () => {
         <div>
             <h1 style={styles.font2}> About the Developers </h1>
             <div style={styles.container2}>
-                <h2 style={styles.font3}>Renzo James M. Cabanos</h2>
-                <h2 style={styles.font3}>Karla Danielle T. Jayme</h2>
-                <h2 style={styles.font3}>Selwyn Charlz Angelo Z. Landayan</h2>
-                <h2 style={styles.font3}>Daniel Joven U. Suyat</h2>
-                <h2 style={styles.font3}>Arvin A. Tagongtong</h2>
+                <div style={styles.developerContainer}>
+                    <img src="path_to_image_renzo" alt="Renzo James M. Cabanos" style={styles.image} />
+                    <h2 style={styles.font3}>Renzo James M. Cabanos</h2>
+                </div>
+                <div style={styles.developerContainer}>
+                    <img src="path_to_image_karla" alt="Karla Danielle T. Jayme" style={styles.image} />
+                    <h2 style={styles.font3}>Karla Danielle T. Jayme</h2>
+                </div>
+                <div style={styles.developerContainer}>
+                    <img src="path_to_image_selwyn" alt="Selwyn Charlz Angelo Z. Landayan" style={styles.image} />
+                    <h2 style={styles.font3}>Selwyn Charlz Angelo Z. Landayan</h2>
+                </div>
+                <div style={styles.developerContainer}>
+                    <img src="path_to_image_daniel" alt="Daniel Joven U. Suyat" style={styles.image} />
+                    <h2 style={styles.font3}>Daniel Joven U. Suyat</h2>
+                </div>
+                <div style={styles.developerContainer}>
+                    <img src="path_to_image_arvin" alt="Arvin A. Tagongtong" style={styles.image} />
+                    <h2 style={styles.font3}>Arvin A. Tagongtong</h2>
+                </div>
+                <div style={styles.font4}>
+                    <h3>This Web Application is intended for Project Design only.</h3>
+                </div>
             </div>
         </div>
-    )
-}
-
+    );
+};
 
 export default NavBar;
 
@@ -79,7 +95,18 @@ const styles = {
         padding: '50px',
         borderRadius: '50px',
         backgroundColor: 'transparent',
-        border: '5px solid transparnt',
+        border: '5px solid transparent',
+    },
+    developerContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '10px',
+    },
+    image: {
+        width: '50px',
+        height: '50px',
+        borderRadius: '50%',
+        marginRight: '10px',
     },
     button: {
         padding: '15px 35px',
@@ -136,6 +163,16 @@ const styles = {
         lineHeight: '36px',
         letterSpacing: '0em',
         textAlign: 'left',
+        color: '#fff',
+        whiteSpace: 'nowrap',
+    },
+    font4: {
+        fontFamily: 'Rubik',
+        fontSize: '10px',
+        fontWeight: '800',
+        lineHeight: '36px',
+        letterSpacing: '0em',
+        textAlign: 'center',
         color: '#fff',
         whiteSpace: 'nowrap',
     },
