@@ -44,6 +44,10 @@ const OverheadPress = () => {
       setShowCamera(false);
     };
 
+    // Define the expected label
+    const LABEL = "overhead_press";
+    let incorrect = 0;
+
   // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
@@ -55,7 +59,7 @@ const OverheadPress = () => {
       };
   
       // Increment reps counter if the label matches LABEL
-      if (predictions.label === "overhead_press") {
+      if (predictions.label === LABEL) {
         setReps(prevReps => prevReps + 1);
       };
     };

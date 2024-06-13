@@ -44,6 +44,10 @@ const Jack = () => {
     setShowCamera(false);
   };
 
+  // Define the expected label
+  const LABEL = "jump_and_jacks";
+  let incorrect = 0;
+
   // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
@@ -55,7 +59,7 @@ const Jack = () => {
       };
   
       // Increment reps counter if the label matches LABEL
-      if (predictions.label === "jump_and_jacks") {
+      if (predictions.label === LABEL) {
         setReps(prevReps => prevReps + 1);
       };
     };

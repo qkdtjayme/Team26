@@ -44,6 +44,10 @@ const Curl = () => {
     setShowCamera(false);
   };
 
+  // Define the expected label
+  const LABEL = "barbell_biceps_curl";
+  let incorrect = 0;
+
   // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
@@ -55,7 +59,7 @@ const Curl = () => {
       };
   
       // Increment reps counter if the label matches LABEL
-      if (predictions.label === "barbell_biceps_curl") {
+      if (predictions.label === LABEL) {
         setReps(prevReps => prevReps + 1);
       };
     };

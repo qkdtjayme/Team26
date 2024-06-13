@@ -44,6 +44,10 @@ const Lunge = () => {
     setShowCamera(false);
   };
 
+  // Define the expected label
+  const LABEL = "lunges";
+  let incorrect = 0;
+
   // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
@@ -55,7 +59,7 @@ const Lunge = () => {
       };
   
       // Increment reps counter if the label matches LABEL
-      if (predictions.label === "lunges") {
+      if (predictions.label === LABEL) {
         setReps(prevReps => prevReps + 1);
       };
     };

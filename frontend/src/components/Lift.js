@@ -44,6 +44,10 @@ const Lift = () => {
     setShowCamera(false);
   };
 
+  // Define the expected label
+  const LABEL = "deadlift";
+  let incorrect = 0;
+
   // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
@@ -55,7 +59,7 @@ const Lift = () => {
       };
   
       // Increment reps counter if the label matches LABEL
-      if (predictions.label === "deadlift") {
+      if (predictions.label === LABEL) {
         setReps(prevReps => prevReps + 1);
       };
     };
