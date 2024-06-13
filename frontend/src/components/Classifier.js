@@ -26,7 +26,6 @@ const Classifier = ({ predictionHandler }) => {
 
   const onResults = (results) => {
     if (!results.poseLandmarks) {
-      console.log("No pose landmarks detected.");
       return;
     }
 
