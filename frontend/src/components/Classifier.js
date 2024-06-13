@@ -8,7 +8,6 @@ const LABELS = [
   "barbell_biceps_curl",
   "deadlift",
   "jump_and_jacks",
-  "lateral_raise",
   "lunges",
   "overhead_press",
   "push_up",

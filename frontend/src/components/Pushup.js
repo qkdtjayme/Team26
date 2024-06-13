@@ -8,7 +8,7 @@ const Pushup = () => {
   const [showCamera, setShowCamera] = useState(false);
   const [sets, setSets] = useState(0);
   const [reps, setReps] = useState(0);
-  const [timer, setTimer] = useState(90);
+  const [timer, setTimer] = useState(30);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Pushup = () => {
     // Controls the cameras
     const cameraClick = () => {
       setShowCamera(true);
-      setTimer(90);
+      setTimer(30);
       setIsTimerRunning(false);
     };
   
@@ -45,8 +45,8 @@ const Pushup = () => {
     };
 
 // Define the expected label
-const LABEL = "push_up";
-let incorrect = 0;
+//const LABEL = "push_up";
+//let incorrect = 0;
 
 // Gets the prediction from the classifier
 const predictionHandler = (predictions) => {
@@ -54,15 +54,15 @@ const predictionHandler = (predictions) => {
     console.log(predictions); // Uncomment for debugging
 
     // Increment incorrect counter if the label is not "barbell_biceps_curl"
-    if (predictions.label !== "barbell_biceps_curl") {
+    if (predictions.label !== "push_up") {
       incorrect += 1;
-    }
+    };
 
     // Increment reps counter if the label matches LABEL
-    if (predictions.label === LABEL) {
+    if (predictions.label === "push_up") {
       setReps(prevReps => prevReps + 1);
-    }
-  }
+    };
+  };
 };
 
   return (
@@ -104,7 +104,7 @@ const predictionHandler = (predictions) => {
               </div>
               <div style={styles.text}>
                 <h2>Set: {sets} | <span style={styles.greenText}>3</span></h2>
-                <h2>Rep: {reps} | <span style={styles.greenText}>10</span></h2>
+                <h2>Rep: {reps} | <span style={styles.greenText}>12</span></h2>
                 <h2>Rest Duration: <span style={styles.greenText}>{timer} seconds</span></h2>
               </div>
               <button type="submit" style={styles.button} onClick={handleHome}>

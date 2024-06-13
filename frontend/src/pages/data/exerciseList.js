@@ -9,37 +9,37 @@ export const EXERCISES = {
   curls: {
     name: "Bicep Curls",
     imageFile: "bicep.jpg",
-    description: "STRENGTH | Build strength in your Upper Arm.",
+    description: "MUSCLE STRENGTH | Build strength in your Upper Arm.",
     link: "/curl",
   },
   deadlifts: {
     name: "Deadlifts",
     imageFile: "lift.jpg",
-    description: "STRENGTH | Strengthening Upper and Lower Back, Glutes, and Hamstrings.",
+    description: "MUSCLE STRENGTH | Strengthening Upper and Lower Back, and Glutes.",
     link: "/lift",
   },
   jacks: {
     name: "Jump Jacks",
     imageFile: "jacks.jpg",
-    description: "STRENGTH | Burn Fat and Build Muscle without using Weights.",
+    description: "ENDURANCE | Burn Fat and Build Muscle without using Weights.",
     link: "/jack",
   },
   lunges: {
     name: "Lunges",
     imageFile: "lunges.jpg",
-    description: "STRENGTH | Increases Muscle Mass in Core, Butt, and Legs.",
+    description: "ENDURANCE | Increases Muscle Mass in Core, Butt, and Legs.",
     link: "/lunge",
   },
   pushups: {
     name: "Push Ups",
     imageFile: "pushup.jpg",
-    description: "STRENGTH | Strengthen and tone Chest, Triceps, and Shoulders.",
+    description: "ENDURANCE | Strengthen and tone Chest, Triceps, and Shoulders.",
     link: "/pushup",
   },
   overheadpress: {
     name: "Overhead Press",
     imageFile: "press.jpg",
-    description: "STRENGTH | Strengthen Shoulders, Traps, and Triceps.",
+    description: "MUSCLE STRENGTH | Strengthen Shoulders, Traps, and Triceps.",
     link: "/overheadpress",
   }, 
 };
