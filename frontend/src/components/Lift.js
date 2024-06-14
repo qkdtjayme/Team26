@@ -31,7 +31,7 @@ const Lift = () => {
 
   const handleHome = () => {
     // Adds record to db
-    addRecordToDb("Deadlift", sets, reps, (err, response) => {
+    addRecordToDb("Deadlifts", sets, reps, (err, response) => {
       if (err) console.log(err);
     });
 
