@@ -37,11 +37,11 @@ const Classifier = ({ predictionHandler }) => {
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
       color: "#00FF00",
-      lineWidth: 4,
+      lineWidth: 1,
     });
     drawLandmarks(canvasCtx, results.poseLandmarks, {
       color: "#FF0000",
-      lineWidth: 2,
+      radius: 0.5,
     });
     canvasCtx.restore();
   };
@@ -84,7 +84,7 @@ const Classifier = ({ predictionHandler }) => {
     const loadModel = async () => {
       try {
         const modelUrl = `/models/classifier/model.json`;
-        const model = await tf.loadLayersModel(modelUrl);
+        const model = await tf.loadGraphModel(modelUrl);
 
         classifierModelRef.current = model;
       } catch (error) {
@@ -99,20 +99,24 @@ const Classifier = ({ predictionHandler }) => {
   }, []);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", minWidth: 540 }}>
       <video
         ref={videoRef}
         id="webcam"
-        style={{ width: 600, height: 540 }}
+        style={{ width: "100%", height: 540, minHeight: 540 }}
         autoPlay
       ></video>
       <canvas
         ref={canvasRef}
         className="output_canvas"
         id="output_canvas"
-        width={600}
-        height={540}
-        style={{ position: "absolute", left: 0, top: 0 }}
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          minHeight: 540,
+        }}
       ></canvas>
     </div>
   );
