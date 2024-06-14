@@ -14,6 +14,8 @@ const OverheadPress = () => {
   // For correct / incorrect
   const [hasStarted, setHasStarted] = useState(false);
   const [isCorrectState, setIsCorrectState] = useState(false);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [isCooldown, setIsCooldown] = useState(false);
 
   useEffect(() => {
     let interval = null;
@@ -39,9 +41,9 @@ const OverheadPress = () => {
   // Controls the cameras
   const cameraClick = () => {
     setHasStarted(true);
-    setShowCamera(true);
-    setTimer(180);
     setIsTimerRunning(false);
+    setTimer(180);
+    setShowCamera(true);
   };
 
   const startTimer = () => {
@@ -49,16 +51,34 @@ const OverheadPress = () => {
     setShowCamera(false);
   };
 
-  // Define the expected label
   const LABEL = "overhead_press";
+  const COOLDOWN_TIME = 2000; // 2 seconds cooldown
+
   const predictionHandler = (predictions) => {
     if (predictions) {
       // console.log(predictions); // Uncomment for debugging
 
       if (predictions.label !== LABEL) {
         setIsCorrectState(false);
-      } else {
+        setIncorrectCount((prevCount) => prevCount + 1);
+      } else if (!isCooldown) {
         setIsCorrectState(true);
+        setReps((prevReps) => {
+          const newReps = prevReps + 1;
+          if (newReps >= 6) {
+            setSets((prevSets) => {
+              const newSets = prevSets + 1;
+              if (newSets >= 4) {
+                setShowCamera(false); // Close the camera after 4 sets
+              }
+              return newSets;
+            });
+            return 0;
+          }
+          return newReps;
+        });
+        setIsCooldown(true);
+        setTimeout(() => setIsCooldown(false), COOLDOWN_TIME);
       }
     }
   };
@@ -130,6 +150,7 @@ const OverheadPress = () => {
     </div>
   );
 };
+
 
 export default OverheadPress;
 

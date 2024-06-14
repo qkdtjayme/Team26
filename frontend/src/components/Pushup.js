@@ -11,9 +11,10 @@ const Pushup = () => {
   const [timer, setTimer] = useState(30);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
-  // For correct / incorrect
   const [hasStarted, setHasStarted] = useState(false);
   const [isCorrectState, setIsCorrectState] = useState(false);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [isCooldown, setIsCooldown] = useState(false);
 
   useEffect(() => {
     let interval = null;
@@ -39,9 +40,9 @@ const Pushup = () => {
   // Controls the cameras
   const cameraClick = () => {
     setHasStarted(true);
-    setShowCamera(true);
-    setTimer(30);
     setIsTimerRunning(false);
+    setTimer(30);
+    setShowCamera(true);
   };
 
   const startTimer = () => {
@@ -49,16 +50,34 @@ const Pushup = () => {
     setShowCamera(false);
   };
 
-  // Define the expected label
   const LABEL = "push_up";
+  const COOLDOWN_TIME = 2000; // 2 seconds cooldown
+
   const predictionHandler = (predictions) => {
     if (predictions) {
       // console.log(predictions); // Uncomment for debugging
 
       if (predictions.label !== LABEL) {
         setIsCorrectState(false);
-      } else {
+        setIncorrectCount((prevCount) => prevCount + 1);
+      } else if (!isCooldown) {
         setIsCorrectState(true);
+        setReps((prevReps) => {
+          const newReps = prevReps + 1;
+          if (newReps >= 12) {
+            setSets((prevSets) => {
+              const newSets = prevSets + 1;
+              if (newSets >= 4) {
+                setShowCamera(false); // Close the camera after 4 sets
+              }
+              return newSets;
+            });
+            return 0;
+          }
+          return newReps;
+        });
+        setIsCooldown(true);
+        setTimeout(() => setIsCooldown(false), COOLDOWN_TIME);
       }
     }
   };
@@ -111,7 +130,7 @@ const Pushup = () => {
                 ""
               )}
               <h2>
-                Set: {sets} | <span style={styles.greenText}>3</span>
+                Set: {sets} | <span style={styles.greenText}>4</span>
               </h2>
               <h2>
                 Rep: {reps} | <span style={styles.greenText}>12</span>
