@@ -37,9 +37,9 @@ export const EXERCISES = {
     link: "/pushup",
   },
   overheadpress: {
-    name: "Overhead Press",
+    name: "OverheadPress",
     imageFile: "press.jpg",
-    description: "MUSCLE STRENGTH | Strengthen Shoulders, Traps, and Triceps.",
+    description: "MUSCLE STRENGTH | Strengthen Shoulders, and Triceps.",
     link: "/overheadpress",
   }, 
 };
