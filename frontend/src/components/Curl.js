@@ -14,6 +14,8 @@ const Curl = () => {
   // For correct / incorrect
   const [hasStarted, setHasStarted] = useState(false);
   const [isCorrectState, setIsCorrectState] = useState(false);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [isCooldown, setIsCooldown] = useState(false);
 
   useEffect(() => {
     let interval = null;
@@ -50,14 +52,33 @@ const Curl = () => {
   };
 
   const LABEL = "barbell_biceps_curl";
+  const COOLDOWN_TIME = 2000; // 2 seconds cooldown
+
   const predictionHandler = (predictions) => {
     if (predictions) {
       // console.log(predictions); // Uncomment for debugging
 
       if (predictions.label !== LABEL) {
         setIsCorrectState(false);
-      } else {
+        setIncorrectCount((prevCount) => prevCount + 1);
+      } else if (!isCooldown) {
         setIsCorrectState(true);
+        setReps((prevReps) => {
+          const newReps = prevReps + 1;
+          if (newReps >= 6) {
+            setSets((prevSets) => {
+              const newSets = prevSets + 1;
+              if (newSets >= 4) {
+                setShowCamera(false); // Close the camera after 4 sets
+              }
+              return newSets;
+            });
+            return 0;
+          }
+          return newReps;
+        });
+        setIsCooldown(true);
+        setTimeout(() => setIsCooldown(false), COOLDOWN_TIME);
       }
     }
   };
@@ -143,6 +164,9 @@ const styles = {
   },
   greenText: {
     color: "green",
+  },
+  redText: {
+    color: "red",
   },
   webContainer: {
     padding: "20px",
