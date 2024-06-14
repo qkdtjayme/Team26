@@ -11,6 +11,10 @@ const Lift = () => {
   const [timer, setTimer] = useState(180);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
+  // For correct / incorrect
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isCorrectState, setIsCorrectState] = useState(false);
+
   useEffect(() => {
     let interval = null;
     if (isTimerRunning && timer > 0) {
@@ -34,6 +38,7 @@ const Lift = () => {
 
   // Controls the cameras
   const cameraClick = () => {
+    setHasStarted(true);
     setIsTimerRunning(false);
     setTimer(180);
     setShowCamera(true);
@@ -44,25 +49,19 @@ const Lift = () => {
     setShowCamera(false);
   };
 
+  // Gets the prediction from the classifier
   // Define the expected label
   const LABEL = "deadlift";
-  let incorrect = 0;
-
-  // Gets the prediction from the classifier
   const predictionHandler = (predictions) => {
     if (predictions) {
-      console.log(predictions); // Uncomment for debugging
-  
-      // Increment incorrect counter if the label is not "barbell_biceps_curl"
-      if (predictions.label !== "deadlift") {
-        incorrect += 1;
-      };
-  
-      // Increment reps counter if the label matches LABEL
-      if (predictions.label === LABEL) {
-        setReps(prevReps => prevReps + 1);
-      };
-    };
+      // console.log(predictions); // Uncomment for debugging
+
+      if (predictions.label !== LABEL) {
+        setIsCorrectState(false);
+      } else {
+        setIsCorrectState(true);
+      }
+    }
   };
 
   return (
@@ -80,38 +79,55 @@ const Lift = () => {
           ></video>
           <div style={styles.webContainer}>
             <div style={styles.buttonContainer}>
-                <div className="finishButton">
-                  <button
-                    type="submit"
-                    style={styles.button}
-                    onClick={cameraClick}
-                  >
-                    Start Workout
-                  </button>
-                  <button
-                    type="submit"
-                    style={styles.button}
-                    onClick={startTimer}
-                  >
-                    Rest
-                  </button>
-                </div>
+              <div className="finishButton">
+                <button
+                  type="submit"
+                  style={styles.button}
+                  onClick={cameraClick}
+                >
+                  Start Workout
+                </button>
+                <button
+                  type="submit"
+                  style={styles.button}
+                  onClick={startTimer}
+                >
+                  Rest
+                </button>
               </div>
-              <div style={styles.camera}>
-                {showCamera && (
-                  <Classifier predictionHandler={predictionHandler} />
-                )}
-              </div>
-              <div style={styles.text}>
-                <h2>Set: {sets} | <span style={styles.greenText}>4</span></h2>
-                <h2>Rep: {reps} | <span style={styles.greenText}>6</span></h2>
-                <h2>Rest Duration: <span style={styles.greenText}>{timer} seconds</span></h2>
-              </div>
-              <button type="submit" style={styles.button} onClick={handleHome}>
-                Finish Workout
-              </button>
             </div>
+            <div style={styles.camera}>
+              {showCamera && (
+                <Classifier predictionHandler={predictionHandler} />
+              )}
+            </div>
+            <div style={styles.text}>
+              {hasStarted ? (
+                isCorrectState ? (
+                  <h2 style={{ color: "green" }}>You're Doing Great!</h2>
+                ) : (
+                  <h2 style={{ color: "red" }}>Wrong Exercise!</h2>
+                )
+              ) : (
+                ""
+              )}
+
+              <h2>
+                Set: {sets} | <span style={styles.greenText}>4</span>
+              </h2>
+              <h2>
+                Rep: {reps} | <span style={styles.greenText}>6</span>
+              </h2>
+              <h2>
+                Rest Duration:{" "}
+                <span style={styles.greenText}>{timer} seconds</span>
+              </h2>
+            </div>
+            <button type="submit" style={styles.button} onClick={handleHome}>
+              Finish Workout
+            </button>
           </div>
+        </div>
       </div>
     </div>
   );
@@ -143,7 +159,7 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginRight: "500px", 
+    marginRight: "500px",
   },
   camera: {
     padding: "2px",

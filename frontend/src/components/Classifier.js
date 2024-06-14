@@ -1,9 +1,10 @@
 import * as tf from "@tensorflow/tfjs";
-import Webcam from "react-webcam";
 import React, { useEffect, useRef } from "react";
 import { Pose } from "@mediapipe/pose";
+import { Camera } from "@mediapipe/camera_utils";
+import { drawLandmarks, drawConnectors } from "@mediapipe/drawing_utils";
+import { POSE_CONNECTIONS } from "@mediapipe/pose";
 
-const IMG_SIZE = 224;
 const LABELS = [
   "barbell_biceps_curl",
   "deadlift",
@@ -14,124 +15,165 @@ const LABELS = [
 ];
 
 const Classifier = ({ predictionHandler }) => {
-  const webcamRef = useRef(null);
-  const modelRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const canvasCtxRef = useRef(null);
+
+  // For models
+  const classifierModelRef = useRef(null);
   const poseRef = useRef(null);
-  const tensors = useRef([]);
+  const keypointsRef = useRef(null);
+
+  const onResults = (results) => {
+    if (!results.poseLandmarks) {
+      return;
+    }
+
+    const canvasCtx = canvasCtxRef.current;
+    const canvasElement = canvasRef.current;
+
+    // Draws keypoints on the screen
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+      color: "#00FF00",
+      lineWidth: 1,
+    });
+    drawLandmarks(canvasCtx, results.poseLandmarks, {
+      color: "#FF0000",
+      radius: 0.5,
+    });
+    canvasCtx.restore();
+
+    // Store keypoints
+    keypointsRef.current = results.poseLandmarks;
+  };
+
+  const makePredictions = async () => {
+    const keypoints = keypointsRef.current;
+    if (!keypoints) {
+      console.log("No keypoints found");
+      return;
+    }
+
+    // Format input
+    let input = [];
+    for (const keypoint of keypoints) {
+      for (const key in keypoint) {
+        input.push(keypoint[key]);
+      }
+    }
+
+    try {
+      // Create the input tensor and make predictions using executeAsync
+      const inputTensor = tf.tensor1d(input).expandDims();
+
+      // Use executeAsync for dynamic operations
+      const predictions = await classifierModelRef.current.execute(inputTensor);
+
+      // Extract prediction values
+      const classPrediction = predictions.argMax(-1); // Get the index of the highest probability
+      const classIndex = (await classPrediction.data())[0];
+      const classLabel = LABELS[classIndex];
+
+      const results = {
+        idx: classIndex,
+        label: classLabel,
+        prob: (await predictions.data())[classIndex], // Probability of the predicted class
+      };
+
+      // Send results to prediction handler
+      predictionHandler(results);
+
+      // Dispose tensors to free memory
+      tf.dispose([inputTensor, predictions, classPrediction]);
+    } catch (error) {
+      console.error("Error during model execution:", error);
+    }
+  };
 
   useEffect(() => {
-    const loadModel = async () => {
-      try {
-        const modelUrl = `/models/inception/model.json`;
-        const model = await tf.loadLayersModel(modelUrl);
-        modelRef.current = model;
-      } catch (error) {
-        console.error("Error loading the model:", error);
-      }
-    };
-
-    const initializePose = async () => {
-      poseRef.current = new Pose({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+    const initializePoseLandmarker = async () => {
+      // Initialize pose
+      const pose = new Pose({
+        locateFile: (file) => {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+        },
       });
-
-      poseRef.current.setOptions({
+      pose.setOptions({
         modelComplexity: 1,
         smoothLandmarks: true,
         enableSegmentation: true,
         smoothSegmentation: true,
         minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
+        minTrackingConfidence: 0.5,
       });
 
-      poseRef.current.onResults(handlePoseResults);
+      pose.onResults(onResults);
+      poseRef.current = pose;
     };
 
-    loadModel();
-    initializePose();
-  }, []);
+    const startWebcam = () => {
+      const camera = new Camera(videoRef.current, {
+        onFrame: async () => {
+          if (poseRef.current) {
+            await poseRef.current.send({ image: videoRef.current });
+          }
+        },
+        width: 600,
+        height: 540,
+      });
 
-  const handlePoseResults = async (results) => {
-    if (!results.poseLandmarks) {
-      tensors.current = [];
-      return;
-    }
+      camera.start();
+    };
 
-    const tensor = tf.tidy(() => {
-      const keypoints = results.poseLandmarks.map(landmark => [
-        landmark.x,
-        landmark.y,
-        landmark.z
-      ]);
-      return tf.tensor2d(keypoints).reshape([1, keypoints.length * 3]);
-    });
-
-    tensors.current = tensors.current.concat(tensor);
-
-    if (tensors.current.length >= 1) {
-      console.log("Extracting features from frames...");
-      const frameFeatures = extractFeatures(tensors.current);
-      tensors.current = [];
-
+    const loadModel = async () => {
       try {
-        const predictions = await modelRef.current.predict(frameFeatures).data();
+        const modelUrl = `/models/classifier/model.json`;
+        const model = await tf.loadGraphModel(modelUrl);
 
-        const maxIndices = tf.tensor1d(predictions).argMax();
-        const maxIndexValue = maxIndices.dataSync()[0];
-        const classLabel = LABELS[maxIndexValue];
-
-        console.log(`Predictions: ${predictions}`);
-        console.log(`Predicted class index: ${maxIndexValue}`);
-        console.log(`Predicted class label: ${classLabel}`);
-
-        if (predictionHandler) {
-          predictionHandler({
-            idx: maxIndexValue,
-            label: classLabel,
-            probs: predictions,
-          });
-        }
-      } catch (err) {
-        console.error("Error during prediction:", err);
+        classifierModelRef.current = model;
+      } catch (error) {
+        console.error("Error loading the model:", error);
       }
-    }
-  };
+    };
 
-  const extractFeatures = (tensors) => {
-    const frameFeatures = tf.concat(tensors, 0);
-    return frameFeatures;
-  };
-
-  const predictFrame = async () => {
-    if (webcamRef.current && modelRef.current && poseRef.current) {
-      const frame = webcamRef.current.getScreenshot();
-      const img = new Image();
-      img.src = frame;
-
-      img.onload = async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = IMG_SIZE;
-        canvas.height = IMG_SIZE;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, IMG_SIZE, IMG_SIZE);
-
-        const imageData = ctx.getImageData(0, 0, IMG_SIZE, IMG_SIZE);
-        const rgbImageData = new ImageData(new Uint8ClampedArray(imageData.data), IMG_SIZE, IMG_SIZE);
-
-        await poseRef.current.send({ image: rgbImageData });
-      };
-    }
-  };
+    canvasCtxRef.current = canvasRef.current.getContext("2d");
+    loadModel();
+    initializePoseLandmarker();
+    startWebcam();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      predictFrame();
+      makePredictions();
     }, 100);
 
     return () => clearInterval(interval);
-  }, [webcamRef, modelRef, poseRef]);
+  });
 
-  return <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" width={540} height={600}/>;
+  return (
+    <div style={{ position: "relative", minWidth: 540 }}>
+      <video
+        ref={videoRef}
+        id="webcam"
+        style={{ width: "100%", height: 540, minHeight: 540 }}
+        autoPlay
+      ></video>
+      <canvas
+        ref={canvasRef}
+        className="output_canvas"
+        id="output_canvas"
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          minHeight: 540,
+        }}
+      ></canvas>
+    </div>
+  );
 };
 
 export default Classifier;
