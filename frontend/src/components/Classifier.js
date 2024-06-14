@@ -82,8 +82,6 @@ const Classifier = ({ predictionHandler }) => {
         prob: (await predictions.data())[classIndex], // Probability of the predicted class
       };
 
-      console.log(`Prediction: ${results}`);
-
       // Send results to prediction handler
       predictionHandler(results);
 
