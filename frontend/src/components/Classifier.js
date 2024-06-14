@@ -5,7 +5,6 @@ import { Camera } from "@mediapipe/camera_utils";
 import { drawLandmarks, drawConnectors } from "@mediapipe/drawing_utils";
 import { POSE_CONNECTIONS } from "@mediapipe/pose";
 
-const IMG_SIZE = 224;
 const LABELS = [
   "barbell_biceps_curl",
   "deadlift",
@@ -153,7 +152,7 @@ const Classifier = ({ predictionHandler }) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, []);
+  });
 
   return (
     <div style={{ position: "relative", minWidth: 540 }}>
