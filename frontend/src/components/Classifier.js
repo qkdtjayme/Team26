@@ -23,6 +23,7 @@ const Classifier = ({ predictionHandler }) => {
   // For models
   const classifierModelRef = useRef(null);
   const poseRef = useRef(null);
+  const keypointsRef = useRef(null);
 
   const onResults = (results) => {
     if (!results.poseLandmarks) {
@@ -44,6 +45,54 @@ const Classifier = ({ predictionHandler }) => {
       radius: 0.5,
     });
     canvasCtx.restore();
+
+    // Store keypoints
+    keypointsRef.current = results.poseLandmarks;
+  };
+
+  const makePredictions = async () => {
+    const keypoints = keypointsRef.current;
+    if (!keypoints) {
+      console.log("No keypoints found");
+      return;
+    }
+
+    // Format input
+    let input = [];
+    for (const keypoint of keypoints) {
+      for (const key in keypoint) {
+        input.push(keypoint[key]);
+      }
+    }
+
+    try {
+      // Create the input tensor and make predictions using executeAsync
+      const inputTensor = tf.tensor1d(input).expandDims();
+
+      // Use executeAsync for dynamic operations
+      const predictions = await classifierModelRef.current.execute(inputTensor);
+
+      // Extract prediction values
+      const classPrediction = predictions.argMax(-1); // Get the index of the highest probability
+      const classIndex = (await classPrediction.data())[0];
+      const classLabel = LABELS[classIndex];
+
+      const results = {
+        idx: classIndex,
+        label: classLabel,
+        prob: (await predictions.data())[classIndex], // Probability of the predicted class
+      };
+
+      console.log(`Prediction: ${results}`);
+
+      // Send results to prediction handler
+      predictionHandler(results);
+
+      // Dispose tensors to free memory
+      tf.dispose([inputTensor, predictions, classPrediction]);
+    } catch (error) {
+      console.error("Error during model execution:", error);
+    }
   };
 
   useEffect(() => {
@@ -96,6 +145,14 @@ const Classifier = ({ predictionHandler }) => {
     loadModel();
     initializePoseLandmarker();
     startWebcam();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      makePredictions();
+    }, 100);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
