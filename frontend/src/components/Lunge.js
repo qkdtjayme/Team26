@@ -102,9 +102,9 @@ const Lunge = () => {
             <div style={styles.text}>
               {hasStarted ? (
                 isCorrectState ? (
-                  <h2 style={{ color: "green" }}>You're Doing Great!</h2>
+                  <h2 style={{ color: "green" }}>Correct Exercise!</h2>
                 ) : (
-                  <h2 style={{ color: "red" }}>Wrong Exercise!</h2>
+                  <h2 style={{ color: "red" }}>Incorrect. Check Exercise!</h2>
                 )
               ) : (
                 ""
