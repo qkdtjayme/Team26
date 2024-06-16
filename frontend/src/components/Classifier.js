@@ -35,14 +35,14 @@ const Classifier = ({ predictionHandler }) => {
     // Draws keypoints on the screen
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
-      color: "#00FF00",
-      lineWidth: 1,
-    });
-    drawLandmarks(canvasCtx, results.poseLandmarks, {
-      color: "#FF0000",
-      radius: 0.5,
-    });
+    //drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+      //color: "#00FF00",
+      //lineWidth: 1,
+    //});
+    //drawLandmarks(canvasCtx, results.poseLandmarks, {
+      //color: "#FF0000",
+      //radius: 0.5,
+    //});
     canvasCtx.restore();
 
     // Store keypoints
