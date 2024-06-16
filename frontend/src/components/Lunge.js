@@ -68,7 +68,7 @@ const Lunge = () => {
           if (newReps >= 12) {
             setSets((prevSets) => {
               const newSets = prevSets + 1;
-              if (newSets >= 4) {
+              if (newSets > 4) {
                 setShowCamera(false); // Close the camera after 4 sets
               }
               return newSets;
