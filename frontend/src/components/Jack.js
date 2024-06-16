@@ -65,7 +65,7 @@ const Jack = () => {
         setIsCorrectState(true);
         setReps((prevReps) => {
           const newReps = prevReps + 1;
-          if (newReps >= 6) {
+          if (newReps >= 12) {
             setSets((prevSets) => {
               const newSets = prevSets + 1;
               if (newSets >= 4) {
@@ -134,7 +134,7 @@ const Jack = () => {
                 Set: {sets} | <span style={styles.greenText}>4</span>
               </h2>
               <h2>
-                Rep: {reps} | <span style={styles.greenText}>6</span>
+                Rep: {reps} | <span style={styles.greenText}>12</span>
               </h2>
               <h2>
                 Rest Duration:{" "}
