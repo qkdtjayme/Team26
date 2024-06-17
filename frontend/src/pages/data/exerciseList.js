@@ -1,6 +1,6 @@
 export const EXERCISES_PER_TYPE = {
   underWeight: ["squats", "deadlifts", "pushups", "curls"],
-  healthyWeight: ["lraise", "squats", "deadlifts", "pushups", "barbellrow"],
+  healthyWeight: ["overheadpress", "squats", "deadlifts", "pushups", "barbellrow"],
   overWeight: ["lunges", "squats", "deadlifts", "pushups", "jacks"],
   obese: ["jacks", "squats", "lunges", "deadlifts","overheadpress"],
 };
