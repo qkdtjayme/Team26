@@ -113,6 +113,7 @@ const Lunge = () => {
                 >
                   Rest
                 </button>
+                {isCorrectState && <h2 style={{ color: "green" }}>Lunge</h2>}
               </div>
             </div>
             <div style={styles.camera}>

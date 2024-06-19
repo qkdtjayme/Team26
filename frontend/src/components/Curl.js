@@ -113,6 +113,7 @@ const Curl = () => {
                 >
                   Rest
                 </button>
+                {isCorrectState && <h2 style={{ color: "green" }}>Biceps Curl</h2>}
               </div>
             </div>
             <div style={styles.camera}>

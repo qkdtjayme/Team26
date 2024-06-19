@@ -113,6 +113,7 @@ const OverheadPress = () => {
                 >
                   Rest
                 </button>
+                {isCorrectState && <h2 style={{ color: "green" }}>Overhead Press</h2>}
               </div>
             </div>
             <div style={styles.camera}>

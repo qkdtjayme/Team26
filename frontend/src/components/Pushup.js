@@ -112,6 +112,7 @@ const Pushup = () => {
                 >
                   Rest
                 </button>
+                {isCorrectState && <h2 style={{ color: "green" }}>Push-up</h2>}
               </div>
             </div>
             <div style={styles.camera}>

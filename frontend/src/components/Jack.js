@@ -113,6 +113,7 @@ const Jack = () => {
                 >
                   Rest
                 </button>
+                {isCorrectState && <h2 style={{ color: "green" }}>Jumping Jack</h2>}
               </div>
             </div>
             <div style={styles.camera}>
