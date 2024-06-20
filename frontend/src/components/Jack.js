@@ -8,7 +8,7 @@ const Jack = () => {
   const [showCamera, setShowCamera] = useState(false);
   const [sets, setSets] = useState(0);
   const [reps, setReps] = useState(0);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(180);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   // For correct / incorrect
@@ -42,7 +42,7 @@ const Jack = () => {
   const cameraClick = () => {
     setHasStarted(true);
     setIsTimerRunning(false);
-    setTimer(30);
+    setTimer(180);
     setShowCamera(true);
   };
 
@@ -113,7 +113,7 @@ const Jack = () => {
                 >
                   Rest
                 </button>
-                {isCorrectState && <h2 style={{ color: "green" }}>Jumping Jack</h2>}
+                {isCorrectState && <h2 style={{ color: "green" }}>JumpingJacks</h2>}
               </div>
             </div>
             <div style={styles.camera}>
